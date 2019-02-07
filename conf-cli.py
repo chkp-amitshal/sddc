@@ -1984,8 +1984,8 @@ def load_configuration():
         for f in ['/conf/autoprovision.json', '/conf/.cloud-key',
                   '/conf/cloud.dat']:
             if not os.path.exists(os.environ.get('MDSDIR')+f) and \
-                    os.path.exists(os.environ.get('MDS_TEMPLATE')+f):
-                shutil.move(os.environ.get('MDS_TEMPLATE')+f, os.environ.get(
+                    os.path.exists(os.environ.get('MDS_FWDIR')+f):
+                shutil.move(os.environ.get('MDS_FWDIR')+f, os.environ.get(
                     'MDSDIR')+'/conf')
     if os.path.exists(CONFPATH):
         try:
