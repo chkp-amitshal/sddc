@@ -151,6 +151,10 @@ CONFPATH = os.environ.get(
     'AUTOPROVISION_CONFIG_FILE',
     os.environ.get('MDSDIR',
                    os.environ['FWDIR']) + '/conf/autoprovision.json')
+                   
+MDS_PATH = os.environ.get('MDSDIR')
+
+OLD_MDS_PATH = os.environ.get('MDS_FWDIR')
 
 VERSIONPATH = os.environ.get(
     'AUTOPROVISION_VERSION_FILE',
@@ -1977,16 +1981,20 @@ def nested_protect_unprotect_fields(dictionary, path, protect):
     return dictionary
 
 
+def verify_configuration_files_on_mds():
+    files = ['/conf/autoprovision.json', '/conf/.cloud-key',
+                  '/conf/cloud.dat']
+    if MDS_PATH:
+        for f in files:
+            if not os.path.exists(MDS_PATH+f) and \
+                    os.path.exists(OLD_MDS_PATH+f):
+                shutil.move(OLD_MDS_PATH+f, MDS_PATH+'/conf')
+
+
 def load_configuration():
     """Load the configuration file. """
 
-    if os.environ.get('MDSDIR'):
-        for f in ['/conf/autoprovision.json', '/conf/.cloud-key',
-                  '/conf/cloud.dat']:
-            if not os.path.exists(os.environ.get('MDSDIR')+f) and \
-                    os.path.exists(os.environ.get('MDS_FWDIR')+f):
-                shutil.move(os.environ.get('MDS_FWDIR')+f, os.environ.get(
-                    'MDSDIR')+'/conf')
+    verify_configuration_files_on_mds()
     if os.path.exists(CONFPATH):
         try:
             with open(CONFPATH) as f:
